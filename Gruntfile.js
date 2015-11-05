@@ -3,6 +3,15 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     concat: {
+      options: {
+        separator: ' '
+      },
+      dist: {
+        
+        src: ['public/client/*.js'],
+        // the location of the resulting JS file
+        dest: 'dist/shortlyConcat.js'
+      }
     },
 
     mochaTest: {
@@ -21,11 +30,21 @@ module.exports = function(grunt) {
     },
 
     uglify: {
+      options: {
+        // the banner is inserted at the top of the output
+        banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n'
+      },
+      dist: {
+        files: {
+          'public/dist/shortly.min.js': ['dist/shortlyConcat.js']
+        }
+      }
     },
 
     jshint: {
       files: [
         // Add filespec list here
+        'public/client/*.js', 'shortly-deploy/**/*.js'
       ],
       options: {
         force: 'true',
@@ -39,6 +58,12 @@ module.exports = function(grunt) {
 
     cssmin: {
         // Add filespec list here
+        target: {
+          files: {
+            'dist/minifiedcss.css': ['public/style.css']
+          }
+        }
+        
     },
 
     watch: {
@@ -94,7 +119,7 @@ module.exports = function(grunt) {
     'mochaTest'
   ]);
 
-  grunt.registerTask('build', [
+  grunt.registerTask('build', [ 'jshint', 'concat', 'uglify' , 'cssmin'
   ]);
 
   grunt.registerTask('upload', function(n) {
@@ -107,6 +132,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('deploy', [
       // add your production server task here
+      'test', 'build', 'upload'
   ]);
 
 
