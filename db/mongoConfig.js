@@ -1,23 +1,17 @@
 var mongoose = require('mongoose');
 
-var host = process.env.HOST || 127.0.0.1;
-var port = process.env.PORT || 4568;
+var host = process.env.HOST || "127.0.0.1";
+var port = process.env.PORT || '';
+var user = process.env.DBUSER || '';
+var password = process.env.DBPASSWORD || '';
+var database = process.env.DBDATABASE || 'shortlydb'
 
+mongoose.connect('mongodb://' + user + ':' + password + '@' + host + ':' + port + '/' + database);
+var db = mongoose.connection
 
-var Schema = mongoose.Schema;
-
-var Users = new Schema({
-  username: String,
-  password: String
+db.on('error', console.error.bind(console, "error connecting"));
+db.on('open', function() {
+  console.log("We are in Mongo DB!");
 });
 
-var Urls = new Schema({
-  url: String,
-  baseUrl: String,
-  code: String,
-  title: String,
-  visits: Number
-});
-
-module.exports = mongoose.createConnection('mongodb://' + host + ':' + port);
-
+module.exports = db;
