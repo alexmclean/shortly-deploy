@@ -60,7 +60,7 @@ module.exports = function(grunt) {
         // Add filespec list here
         target: {
           files: {
-            'dist/minifiedcss.css': ['public/style.css']
+            'public/dist/minifiedcss.css': ['public/style.css']
           }
         }
         
